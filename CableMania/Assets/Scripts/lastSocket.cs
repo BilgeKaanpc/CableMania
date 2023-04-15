@@ -15,26 +15,28 @@ public class lastSocket : MonoBehaviour
     GameObject movePosition;
     GameObject socketosition;
 
-    public void ChoosePosition(GameObject moveToObj, GameObject socket)
+    public void Move(string process, GameObject socket, GameObject moveToObj = null)
     {
-        movePosition = moveToObj;
-        picked = true;
+        switch (process)
+        {
+            case "pick":
+                movePosition = moveToObj;
+                picked = true;
+                break;
+            case "change":
+                movePosition = moveToObj;
+                socketosition = socket;
+                posChange = true;
+                break;
+            case "join":
+                socketosition = socket;
+                sitToSocket = true;
+                break;
+            default:
+                break;
+        }
     }
-    public void ChangePosition(GameObject moveToObj, GameObject socket)
-    {
-        movePosition = moveToObj;
-        socketosition = socket;
-        posChange = true;
-    }
-    public void JoinSocket(GameObject socket)
-    {
-        socketosition = socket;
-        sitToSocket = true;
-    }
-    void Start()
-    {
-        
-    }
+    
 
     void Update()
     {

@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     public int socketCount;
     public bool[] situations;
     int completeNumber;
+
+
+    lastSocket _LastSocket;
     void Start()
     {
         
@@ -31,8 +34,8 @@ public class GameManager : MonoBehaviour
                     {
                         if (hit.collider.CompareTag("blueSocket") || hit.collider.CompareTag("redSocket") || hit.collider.CompareTag("yellowSocket"))
                         {
-                            lastSocket _LastSocket = hit.collider.GetComponent<lastSocket>();
-                            hit.collider.GetComponent<lastSocket>().ChoosePosition(_LastSocket.activeSocket.GetComponent<Socket>().movePosition, _LastSocket.activeSocket);
+                            _LastSocket = hit.collider.GetComponent<lastSocket>();
+                            hit.collider.GetComponent<lastSocket>().Move("pick",_LastSocket.activeSocket, _LastSocket.activeSocket.GetComponent<Socket>().movePosition);
                             activeObject = hit.collider.gameObject;
                             activeSocket = _LastSocket.activeSocket;
                             movement = true;
@@ -45,7 +48,7 @@ public class GameManager : MonoBehaviour
                         {
                             Socket _Socket = hit.collider.GetComponent<Socket>();
                             activeSocket.GetComponent<Socket>().isEmpty = false;
-                            activeObject.GetComponent<lastSocket>().ChangePosition(_Socket.movePosition,hit.collider.gameObject);
+                            _LastSocket.Move("change", hit.collider.gameObject, _Socket.movePosition);
                             _Socket.isEmpty = true;
                             activeObject = null;
                             activeSocket = null;
@@ -53,7 +56,7 @@ public class GameManager : MonoBehaviour
                         }
                         else if (activeSocket == hit.collider.gameObject)
                         {
-                            activeObject.GetComponent<lastSocket>().JoinSocket(hit.collider.gameObject);
+                            _LastSocket.Move("join",hit.collider.gameObject);
                             activeSocket = null;
                             activeObject = null;
                             movement = true;
