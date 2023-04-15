@@ -5075,7 +5075,7 @@ MonoBehaviour:
   - {fileID: 2037789065}
   - {fileID: 526161729}
   socketCount: 3
-  situations: 0000
+  situations: 
 --- !u!4 &760148440
 Transform:
   m_ObjectHideFlags: 0

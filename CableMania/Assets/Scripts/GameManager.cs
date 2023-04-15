@@ -12,14 +12,17 @@ public class GameManager : MonoBehaviour
     public GameObject[] Controllers;
     public GameObject[] Sockets;
     public int socketCount;
-    public bool[] situations;
+    public List<bool> situations;
     int completeNumber;
-
+    int controlCount;
 
     lastSocket _LastSocket;
     void Start()
     {
-        
+        for (int i = 0; i < socketCount-1; i++)
+        {
+            situations.Add(false);
+        }
     }
 
     void Update()
@@ -83,7 +86,7 @@ public class GameManager : MonoBehaviour
             {
                 item.SetActive(true);
             }
-        }
+            StartCoroutine(FinishControl());       }
         else
         {
 
@@ -93,15 +96,33 @@ public class GameManager : MonoBehaviour
 
     public void ColControl(int colIndex,bool durum)
     {
-        situations[colIndex] = durum;
+        situations[colIndex] = durum;  
+    }
 
-        if(situations[0] && situations[1])
+    IEnumerator FinishControl()
+    {
+        Debug.Log("Control Ediliyor");
+        yield return new WaitForSeconds(4);
+        foreach (var item in situations)
         {
-            Debug.Log("Win");
+            if (item)
+            {
+                controlCount++;
+            }
+        }
+        if(controlCount == situations.Count)
+        {
+            Debug.Log("win");
         }
         else
         {
-            Debug.Log("Deðiyor");
+            Debug.Log("Temas");
+            foreach (var item in Controllers)
+            {
+                item.SetActive(false);
+            }
         }
+
+        controlCount = 0;
     }
 }
