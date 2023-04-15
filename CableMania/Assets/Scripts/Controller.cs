@@ -6,13 +6,7 @@ public class Controller : MonoBehaviour
 {
     public GameManager _GameManager;
     public int collusionIndex;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    
     void Update()
     {
         Collider[] HitColl = Physics.OverlapBox(transform.position, transform.localScale / 2, Quaternion.identity);

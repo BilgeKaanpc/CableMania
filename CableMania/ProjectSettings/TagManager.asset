@@ -9,6 +9,8 @@ TagManager:
   - yellowSocket
   - redSocket
   - wire
+  - ground
+  - greenSocket
   layers:
   - Default
   - TransparentFX

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
     GameObject activeObject;
     GameObject activeSocket;
     public bool movement;
+
+    [SerializeField] HingeJoint[] breakPoint;
 
     [Header("Level Settings")]
     public GameObject[] Controllers;
@@ -23,6 +26,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text controlText;
     [SerializeField] TMP_Text countText;
     [SerializeField] GameObject controlPanel;
+    [SerializeField] GameObject winPanel;
+    [SerializeField] GameObject losePanel;
 
 
     [Header("Others")]
@@ -36,19 +41,28 @@ public class GameManager : MonoBehaviour
         {
             situations.Add(false);
         }
+        Invoke("SetPoint",2);
     }
+    void SetPoint()
+    {
+        foreach (var item in breakPoint)
+        {
+            item.breakForce = 600;
+            item.breakTorque = 500;
+        }
 
+    }
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
             if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),out RaycastHit hit , 100))
             {
-                if(hit.collider != null)
+                if(hit.collider != null && moveCount > 0)
                 {
                     if(activeObject == null && !movement)
                     {
-                        if (hit.collider.CompareTag("blueSocket") || hit.collider.CompareTag("redSocket") || hit.collider.CompareTag("yellowSocket"))
+                        if (hit.collider.CompareTag("blueSocket") || hit.collider.CompareTag("redSocket") || hit.collider.CompareTag("yellowSocket") || hit.collider.CompareTag("greenSocket"))
                         {
                             _LastSocket = hit.collider.GetComponent<lastSocket>();
                             hit.collider.GetComponent<lastSocket>().Move("pick",_LastSocket.activeSocket, _LastSocket.activeSocket.GetComponent<Socket>().movePosition);
@@ -71,6 +85,10 @@ public class GameManager : MonoBehaviour
                             movement = true;
                             moveCount--;
                             countText.text = "Move : " + moveCount;
+                            if(moveCount <= 0)
+                            {
+                                StartCoroutine(FinishControl());
+                            }
                         }
                         else if (activeSocket == hit.collider.gameObject)
                         {
@@ -133,9 +151,16 @@ public class GameManager : MonoBehaviour
         }
         if(controlCount == situations.Count)
         {
-            controlText.text = "Kazandýn";
+            Win();
             lights[1].SetActive(false);
             lights[2].SetActive(true);
+        }
+        else if(moveCount <= 0)
+        {
+            controlText.text = "Hamle Bitti";
+            lights[1].SetActive(false);
+            lights[0].SetActive(true);
+            Lose();
         }
         else
         {
@@ -147,7 +172,7 @@ public class GameManager : MonoBehaviour
             }
             if (moveCount <= 0)
             {
-                Debug.Log("bitti");
+                Lose();
             }
             lights[1].SetActive(false);
             lights[0].SetActive(true);
@@ -156,6 +181,30 @@ public class GameManager : MonoBehaviour
         controlCount = 0;
     }
 
+    public void Lose()
+    {
+        losePanel.SetActive(true);
+    }
+    public void Win()
+    {
+        winPanel.SetActive(true);
+        controlPanel.SetActive(false);
+    }
+    public void NextLevel()
+    {
+        if(SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+    }
+    public void TryAgain()
+    {
+        SceneManager.LoadScene(0);
+    }
     void closePanel()
     {
         controlPanel.SetActive(false);
