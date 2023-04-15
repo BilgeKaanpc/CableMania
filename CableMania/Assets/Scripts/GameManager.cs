@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,14 +13,25 @@ public class GameManager : MonoBehaviour
     [Header("Level Settings")]
     public GameObject[] Controllers;
     public GameObject[] Sockets;
+    [SerializeField] public int moveCount;
     public int socketCount;
     public List<bool> situations;
     int completeNumber;
     int controlCount;
 
+    [Header("UI Elements")]
+    [SerializeField] TMP_Text controlText;
+    [SerializeField] TMP_Text countText;
+    [SerializeField] GameObject controlPanel;
+
+
+    [Header("Others")]
+    [SerializeField] GameObject[] lights;
+
     lastSocket _LastSocket;
     void Start()
     {
+        countText.text = "Move : " +  moveCount;
         for (int i = 0; i < socketCount-1; i++)
         {
             situations.Add(false);
@@ -56,6 +69,8 @@ public class GameManager : MonoBehaviour
                             activeObject = null;
                             activeSocket = null;
                             movement = true;
+                            moveCount--;
+                            countText.text = "Move : " + moveCount;
                         }
                         else if (activeSocket == hit.collider.gameObject)
                         {
@@ -89,7 +104,10 @@ public class GameManager : MonoBehaviour
             StartCoroutine(FinishControl());       }
         else
         {
-
+            if(moveCount <= 0)
+            {
+                Debug.Log("bitti");
+            }
         }
         completeNumber = 0;
     }
@@ -101,7 +119,10 @@ public class GameManager : MonoBehaviour
 
     IEnumerator FinishControl()
     {
-        Debug.Log("Control Ediliyor");
+        lights[0].SetActive(false);
+        lights[1].SetActive(true);
+        controlPanel.SetActive(true);
+        controlText.text = "Kontrol Ediliyor...";
         yield return new WaitForSeconds(4);
         foreach (var item in situations)
         {
@@ -112,17 +133,31 @@ public class GameManager : MonoBehaviour
         }
         if(controlCount == situations.Count)
         {
-            Debug.Log("win");
+            controlText.text = "Kazandýn";
+            lights[1].SetActive(false);
+            lights[2].SetActive(true);
         }
         else
         {
-            Debug.Log("Temas");
+            controlText.text = "Temas Var";
+            Invoke("closePanel", 3);
             foreach (var item in Controllers)
             {
                 item.SetActive(false);
             }
+            if (moveCount <= 0)
+            {
+                Debug.Log("bitti");
+            }
+            lights[1].SetActive(false);
+            lights[0].SetActive(true);
         }
 
         controlCount = 0;
+    }
+
+    void closePanel()
+    {
+        controlPanel.SetActive(false);
     }
 }
