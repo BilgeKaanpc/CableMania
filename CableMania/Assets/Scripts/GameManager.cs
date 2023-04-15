@@ -7,6 +7,13 @@ public class GameManager : MonoBehaviour
     GameObject activeObject;
     GameObject activeSocket;
     public bool movement;
+
+    [Header("Level Settings")]
+    public GameObject[] Controllers;
+    public GameObject[] Sockets;
+    public int socketCount;
+    public bool[] situations;
+    int completeNumber;
     void Start()
     {
         
@@ -42,10 +49,56 @@ public class GameManager : MonoBehaviour
                             _Socket.isEmpty = true;
                             activeObject = null;
                             activeSocket = null;
+                            movement = true;
+                        }
+                        else if (activeSocket == hit.collider.gameObject)
+                        {
+                            activeObject.GetComponent<lastSocket>().JoinSocket(hit.collider.gameObject);
+                            activeSocket = null;
+                            activeObject = null;
+                            movement = true;
                         }
                     }
                 }
             }
+        }
+    }
+
+    public void SocketControl()
+    {
+        foreach (var item in Sockets)
+        {
+            if(item.GetComponent<lastSocket>().activeSocket.name == item.GetComponent<lastSocket>().socketColor)
+            {
+                completeNumber++;
+            }
+        }
+
+        if(completeNumber == socketCount)
+        {
+            foreach (var item in Controllers)
+            {
+                item.SetActive(true);
+            }
+        }
+        else
+        {
+
+        }
+        completeNumber = 0;
+    }
+
+    public void ColControl(int colIndex,bool durum)
+    {
+        situations[colIndex] = durum;
+
+        if(situations[0] && situations[1])
+        {
+            Debug.Log("Win");
+        }
+        else
+        {
+            Debug.Log("Deðiyor");
         }
     }
 }

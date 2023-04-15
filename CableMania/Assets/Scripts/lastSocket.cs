@@ -5,7 +5,7 @@ using UnityEngine;
 public class lastSocket : MonoBehaviour
 {
     [SerializeField] public GameObject activeSocket;
-    [SerializeField] private string socketColor;
+    [SerializeField] public string socketColor;
     [SerializeField] private GameManager _GameManager;
 
     bool picked;
@@ -26,6 +26,11 @@ public class lastSocket : MonoBehaviour
         socketosition = socket;
         posChange = true;
     }
+    public void JoinSocket(GameObject socket)
+    {
+        socketosition = socket;
+        sitToSocket = true;
+    }
     void Start()
     {
         
@@ -36,7 +41,7 @@ public class lastSocket : MonoBehaviour
         if (picked)
         {
             transform.position = Vector3.Lerp(transform.position, movePosition.transform.position, .02f);
-            if (Vector3.Distance(transform.position, movePosition.transform.position) < .1f)
+            if (Vector3.Distance(transform.position, movePosition.transform.position) < .05f)
             {
                 picked = false;
             }
@@ -44,7 +49,7 @@ public class lastSocket : MonoBehaviour
         if (posChange)
         {
             transform.position = Vector3.Lerp(transform.position, movePosition.transform.position, .02f);
-            if (Vector3.Distance(transform.position, movePosition.transform.position) < .1f)
+            if (Vector3.Distance(transform.position, movePosition.transform.position) < .05f)
             {
                 posChange = false;
                 sitToSocket = true;
@@ -53,11 +58,12 @@ public class lastSocket : MonoBehaviour
         if (sitToSocket)
         {
             transform.position = Vector3.Lerp(transform.position, socketosition.transform.position, .02f);
-            if (Vector3.Distance(transform.position, socketosition.transform.position) < .1f)
+            if (Vector3.Distance(transform.position, socketosition.transform.position) < .05f)
             {
                 sitToSocket = false;
                 _GameManager.movement = false;
                 activeSocket = socketosition;
+                _GameManager.SocketControl();
             }
         }
     }
