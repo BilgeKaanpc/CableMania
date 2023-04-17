@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
         {
             if(moveCount <= 0)
             {
-                Debug.Log("bitti");
+
             }
         }
         completeNumber = 0;
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
         lights[0].SetActive(false);
         lights[1].SetActive(true);
         controlPanel.SetActive(true);
-        controlText.text = "Kontrol Ediliyor...";
+        controlText.text = "Control Process...";
         yield return new WaitForSeconds(4);
         foreach (var item in situations)
         {
@@ -157,14 +157,14 @@ public class GameManager : MonoBehaviour
         }
         else if(moveCount <= 0)
         {
-            controlText.text = "Hamle Bitti";
+            controlText.text = "No Moves Left";
             lights[1].SetActive(false);
             lights[0].SetActive(true);
             Lose();
         }
         else
         {
-            controlText.text = "Temas Var";
+            controlText.text = "Contact!!!";
             Invoke("closePanel", 3);
             foreach (var item in Controllers)
             {
